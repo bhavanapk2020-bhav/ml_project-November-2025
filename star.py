@@ -45,11 +45,9 @@ y_pred = model.predict(X_test)
 print(accuracy_score(Y_test,y_pred))
 
 def input_features():
-    # Use a container for the input section
     with streamlit.container(border=True):
         streamlit.subheader("Enter Spectroscopic Features")
         
-        # Create 2 columns for the input fields
         col1, col2 = streamlit.columns(2)
         
         with col1:
@@ -79,32 +77,21 @@ def input_features():
     
     return features
 
-# --- MAIN APP LOGIC ---
 
-# 1. Get input features
 input_df = input_features()
 
-# Placeholder for image or visual
 streamlit.markdown("---")
-# Use columns to position the button and prediction area nicely
 main_col, pred_col = streamlit.columns([3, 1])
 
-# 2. Prediction Button
 with main_col:
-    # Adding a clear explanation of what the model will do
     streamlit.info("Click the button below to classify the celestial object based on the entered photometric data.")
     
     if streamlit.button("Classify Object", type="primary") :
         
-        # 3. Perform prediction
         try:
-            # The input must be scaled using the same scaler fitted on training data
             input_scaled = scaler.transform(input_df)
             result = knn.predict(input_scaled)
             
-            # Map the encoded result back to the original class name
-            # 0 -> Galaxy, 1 -> QSO, 2 -> Star (based on a common assumption/the order of le.fit_transform)
-            # Since the original file didn't show the classes, I'll infer them:
             if result[0] == 0:
                 final_result = "Star"
                 color = "orange"
@@ -140,7 +127,6 @@ with main_col:
         except Exception as e:
             streamlit.error(f"An error occurred during prediction: {e}. Please check your inputs.")
 
-# Optional: Add a section to show the inputs being used
 with streamlit.expander("Show Raw Input Data"):
     streamlit.dataframe(input_df)
 
